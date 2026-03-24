@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import ContentContainer from "@/components/ContentContainer";
 import CreateTaskModal from "@/components/CreateTaskModal";
 import TaskTypeIcon from "@/components/TaskTypeIcon";
-import { Search, SearchX, Columns3, Loader2, Plus, Eye, Pencil } from "lucide-react";
+import TaskFilterBar from "@/components/TaskFilterBar";
+import ColumnSelector from "@/components/ColumnSelector";
+import { Search, Loader2, Plus, Eye, Pencil } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import {
   ITask,
@@ -53,7 +55,6 @@ export default function TaskPage() {
 
   // Column visibility
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE);
-  const [showColumnMenu, setShowColumnMenu] = useState(false);
 
   // Create modal
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -120,81 +121,45 @@ export default function TaskPage() {
 
   return (
   <>
-    <ContentContainer titlePage="จัดการภารกิจ">
+    <ContentContainer
+      titlePage="จัดการภารกิจ"
+      rightSideContent={
+        <button
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
+        >
+          <Plus className="w-4 h-4" /> สร้างภารกิจ
+        </button>
+      }
+    >
       <div className="flex flex-col gap-3">
         {/* ── Toolbar ── */}
         <div className="flex flex-row flex-wrap justify-end gap-2">
           <button
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" /> สร้างภารกิจ
-          </button>
-          <button
             onClick={() => setShowFilter(!showFilter)}
-            className="px-3 py-2 bg-white border text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition flex items-center gap-1.5"
+            className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
           >
-            {showFilter ? <SearchX className="w-4 h-4" /> : <Search className="w-4 h-4" />} ค้นหา
+            <Search className="w-4 h-4" /> ค้นหา
           </button>
 
-          {/* Column selector */}
-          <div className="relative">
-            <button
-              onClick={() => setShowColumnMenu(!showColumnMenu)}
-              className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition flex items-center gap-1.5"
-            >
-              <Columns3 className="w-4 h-4" /> Columns
-            </button>
-            {showColumnMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white border rounded-lg shadow-lg p-2 z-20 min-w-[180px]">
-                {ALL_COLUMNS.filter((c) => c.key !== "actions").map((col) => (
-                  <label key={col.key} className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 rounded cursor-pointer text-sm">
-                    <input
-                      type="checkbox"
-                      checked={visibleColumns.includes(col.key)}
-                      onChange={() => toggleColumn(col.key)}
-                      className="accent-indigo-600"
-                    />
-                    {col.label}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+          <ColumnSelector
+            columns={ALL_COLUMNS}
+            visibleColumns={visibleColumns}
+            onToggle={toggleColumn}
+          />
         </div>
 
         {/* ── Filter panel ── */}
         {showFilter && (
-          <div className="flex flex-wrap gap-3 p-4 bg-gray-50 rounded-lg border">
-            <input
-              type="text"
-              placeholder="ค้นหาภารกิจ..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none flex-1 min-w-[200px]"
-            />
-            <select
-              value={taskTypeFilter}
-              onChange={(e) => setTaskTypeFilter(e.target.value)}
-              className="px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            >
-              <option value="">ทุกประเภท</option>
-              {Object.entries(TASK_TYPE_CONFIG).map(([key, cfg]) => (
-                <option key={key} value={key}>{cfg.icon} {cfg.label}</option>
-              ))}
-            </select>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            >
-              <option value="">ทุกสถานะ</option>
-              {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
-                <option key={key} value={key}>{cfg.label}</option>
-              ))}
-            </select>
-          </div>
+          <TaskFilterBar
+            search={search}
+            setSearch={setSearch}
+            taskTypeFilter={taskTypeFilter}
+            setTaskTypeFilter={setTaskTypeFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+          />
         )}
 
         {/* ── Table ── */}
