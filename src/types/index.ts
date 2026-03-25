@@ -106,7 +106,6 @@ export const TASK_TYPE_FIELDS: Record<TaskTypeKey, ITaskTypeField[]> = {
   royal_security: [
     { key: "royal_name", label: "ชื่อพระบรมวงศานุวงศ์ / รหัสประจำพระองค์", type: "text", placeholder: "ระบุพระนาม หรือ รหัสประจำพระองค์", required: true },
     { key: "origin", label: "ออกมาจากที่ใด", type: "text", placeholder: "สถานที่ต้นทาง" },
-    { key: "time", label: "เวลา", type: "datetime-local" },
     { key: "destination", label: "จะเสด็จไปที่ไหน", type: "text", placeholder: "สถานที่ปลายทาง" },
   ],
   vip_protection: [
