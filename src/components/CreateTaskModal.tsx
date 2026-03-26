@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { fetchApi } from "@/lib/api";
 import {
   Crown,
@@ -44,7 +46,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
   const [selectedType, setSelectedType] = useState<TaskTypeKey | null>(null);
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
-  const [deadlineAt, setDeadlineAt] = useState("");
+  const [deadlineAt, setDeadlineAt] = useState<Date | null>(null);
   const [content, setContent] = useState<Record<string, string>>({});
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
@@ -56,7 +58,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
     setSelectedType(null);
     setTitle("");
     setPriority("medium");
-    setDeadlineAt("");
+    setDeadlineAt(null);
     setContent({});
     setError("");
     onClose();
@@ -86,7 +88,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
         title: title.trim() || typeLabel,
           task_type_key: selectedType,
           priority,
-          ...(deadlineAt ? { deadline_at: deadlineAt } : {}),
+          ...(deadlineAt ? { deadline_at: deadlineAt.toISOString() } : {}),
           content,
         }),
       });
@@ -236,11 +238,16 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                 {/* วันปฏิบัติภารกิจ */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">วันปฏิบัติภารกิจ</label>
-                  <input
-                    type="datetime-local"
-                    value={deadlineAt}
-                    onChange={(e) => setDeadlineAt(e.target.value)}
+                  <DatePicker
+                    selected={deadlineAt}
+                    onChange={(date) => setDeadlineAt(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    dateFormat="dd/MM/yyyy HH:mm"
+                    placeholderText="เลือกวันและเวลา..."
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+                    popperPlacement="bottom-start"
                   />
                 </div>
 

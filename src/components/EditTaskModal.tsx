@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { X, Loader2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import {
@@ -31,7 +33,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TaskStatus>("pending");
   const [priority, setPriority] = useState("medium");
-  const [deadlineAt, setDeadlineAt] = useState("");
+  const [deadlineAt, setDeadlineAt] = useState<Date | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,7 +43,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
     setDescription(task.description ?? "");
     setStatus(task.status);
     setPriority(task.priority);
-    setDeadlineAt(task.deadline_at ? task.deadline_at.slice(0, 16) : "");
+    setDeadlineAt(task.deadline_at ? new Date(task.deadline_at) : null);
     setError("");
   }, [task]);
 
@@ -61,7 +63,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
           description: description || null,
           status,
           priority,
-          deadline_at: deadlineAt || null,
+          deadline_at: deadlineAt ? deadlineAt.toISOString() : null,
         }),
       });
       onUpdated();
@@ -177,11 +179,16 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
             {/* Deadline */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">วันปฏิบัติภารกิจ</label>
-              <input
-                type="datetime-local"
-                value={deadlineAt}
-                onChange={(e) => setDeadlineAt(e.target.value)}
+              <DatePicker
+                selected={deadlineAt}
+                onChange={(date) => setDeadlineAt(date)}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="dd/MM/yyyy HH:mm"
+                placeholderText="เลือกวันและเวลา..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
+                popperPlacement="bottom-start"
               />
             </div>
           </div>
