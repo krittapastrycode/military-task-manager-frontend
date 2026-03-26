@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import TimeInput24H from "@/components/TimeInput24H";
 import { X, Loader2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import {
@@ -182,9 +183,9 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
               <DatePicker
                 selected={deadlineAt}
                 onChange={(date) => setDeadlineAt(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
+                showTimeInput
+                timeInputLabel="เวลา:"
+                customTimeInput={<TimeInput24H />}
                 dateFormat="dd/MM/yyyy HH:mm"
                 placeholderText="เลือกวันและเวลา..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
