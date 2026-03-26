@@ -248,9 +248,14 @@ export default function TaskPage() {
                             </div>
                           )}
                           {col.key === "priority" && (
-                            <span className="text-sm font-medium" style={{ color: priorityConfig.color }}>
-                              {priorityConfig.label}
-                            </span>
+                            <div className="flex justify-center">
+                              <span
+                                className="inline-flex px-2 py-1 rounded-full text-xs font-medium"
+                                style={{ backgroundColor: priorityConfig.bgColor, color: priorityConfig.color }}
+                              >
+                                {priorityConfig.label}
+                              </span>
+                            </div>
                           )}
                           {col.key === "deadline_at" && (
                             <span className="text-sm text-center block">

@@ -141,9 +141,9 @@ export const STATUS_CONFIG: Record<TaskStatus, { label: string; color: string; b
   delete:   { label: "ลบแล้ว",        color: "#374151", bgColor: "#e5e7eb" },
 };
 
-export const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
-  low:    { label: "ต่ำ",     color: "#6b7280" },
-  medium: { label: "ปานกลาง", color: "#d97706" },
-  high:   { label: "สูง",     color: "#dc2626" },
-  urgent: { label: "เร่งด่วน", color: "#7c2d12" },
+export const PRIORITY_CONFIG: Record<string, { label: string; color: string; bgColor: string }> = {
+  low:    { label: "ต่ำ",     color: "#6b7280", bgColor: "#f3f4f6" },
+  medium: { label: "ปานกลาง", color: "#d97706", bgColor: "#fef3c7" },
+  high:   { label: "สูง",     color: "#dc2626", bgColor: "#fee2e2" },
+  urgent: { label: "เร่งด่วน", color: "#7c2d12", bgColor: "#fde8d8" },
 };
