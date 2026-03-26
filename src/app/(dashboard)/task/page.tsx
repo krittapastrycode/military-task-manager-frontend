@@ -247,8 +247,8 @@ export default function TaskPage() {
                           {col.key === "status" && (
                             <div className="flex justify-center">
                               <span
-                                className="inline-flex px-3 py-[0.3125rem] rounded-full text-sm font-medium border"
-                                style={{ backgroundColor: hexToRgba(statusConfig.bgColor, 0.4), color: statusConfig.color, borderColor: statusConfig.color }}
+                                className="inline-flex px-3 py-[0.3125rem] rounded-full text-sm font-semibold text-white"
+                                style={{ backgroundColor: statusConfig.color }}
                               >
                                 {statusConfig.label}
                               </span>
