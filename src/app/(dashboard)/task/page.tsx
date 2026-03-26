@@ -250,7 +250,7 @@ export default function TaskPage() {
                           {col.key === "priority" && (
                             <div className="flex justify-center">
                               <span
-                                className="inline-flex px-3 py-1.5 rounded-full text-sm font-medium"
+                                className="inline-flex justify-center w-[5.5rem] py-1.5 rounded-full text-sm font-medium"
                                 style={{ backgroundColor: priorityConfig.bgColor, color: priorityConfig.color }}
                               >
                                 {priorityConfig.label}
