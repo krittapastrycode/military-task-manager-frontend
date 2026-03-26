@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import ContentContainer from "@/components/ContentContainer";
 import CreateTaskModal from "@/components/CreateTaskModal";
+import TaskDetailModal from "@/components/TaskDetailModal";
+import EditTaskModal from "@/components/EditTaskModal";
 import TaskTypeIcon from "@/components/TaskTypeIcon";
 import TaskFilterBar from "@/components/TaskFilterBar";
 import ColumnSelector from "@/components/ColumnSelector";
@@ -58,6 +60,10 @@ export default function TaskPage() {
 
   // Create modal
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Detail + Edit modals
+  const [detailTask, setDetailTask] = useState<ITask | null>(null);
+  const [editTask, setEditTask] = useState<ITask | null>(null);
 
   /* ─── Fetch ─── */
   const fetchTasks = useCallback(async (page = 1) => {
@@ -267,10 +273,14 @@ export default function TaskPage() {
                           )}
                           {col.key === "actions" && (
                             <div className="flex flex-col gap-1 items-stretch">
-                              <button className="px-3 py-1.5 bg-sky-50 text-sky-600 rounded text-xs font-medium hover:bg-sky-100 transition flex items-center gap-1">
+                              <button
+                                onClick={() => setDetailTask(task)}
+                                className="px-3 py-1.5 bg-sky-50 text-sky-600 rounded text-xs font-medium hover:bg-sky-100 transition flex items-center gap-1">
                                 <Eye className="w-3.5 h-3.5" /> รายละเอียด
                               </button>
-                              <button className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-medium hover:bg-blue-100 transition flex items-center gap-1">
+                              <button
+                                onClick={() => setEditTask(task)}
+                                className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-medium hover:bg-blue-100 transition flex items-center gap-1">
                                 <Pencil className="w-3.5 h-3.5" /> แก้ไข
                               </button>
                             </div>
@@ -325,6 +335,17 @@ export default function TaskPage() {
       open={showCreateModal}
       onClose={() => setShowCreateModal(false)}
       onCreated={() => fetchTasks(1)}
+    />
+
+    <TaskDetailModal
+      task={detailTask}
+      onClose={() => setDetailTask(null)}
+    />
+
+    <EditTaskModal
+      task={editTask}
+      onClose={() => setEditTask(null)}
+      onUpdated={() => fetchTasks(pagination.current_page)}
     />
   </>
   );
