@@ -184,6 +184,12 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                   <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">{error}</div>
                 )}
 
+                {/* Section title */}
+                <div className="flex items-center gap-2 pb-1">
+                  {(() => { const IC = TYPE_CARD_STYLES[selectedType].Icon; return <IC className="w-5 h-5" style={{ color: typeCfg.color }} />; })()}
+                  <h3 className="text-sm font-semibold text-gray-800">ข้อมูล{typeCfg.label}</h3>
+                </div>
+
                 {/* ชื่องาน */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -197,12 +203,6 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                     placeholder="ระบุชื่องาน..."
                   />
-                </div>
-
-                {/* Section title */}
-                <div className="flex items-center gap-2 pb-1">
-                  {(() => { const IC = TYPE_CARD_STYLES[selectedType].Icon; return <IC className="w-5 h-5" style={{ color: typeCfg.color }} />; })()}
-                  <h3 className="text-sm font-semibold text-gray-800">ข้อมูล{typeCfg.label}</h3>
                 </div>
 
                 {/* Dynamic fields */}
