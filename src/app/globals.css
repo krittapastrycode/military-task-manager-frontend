@@ -10,6 +10,9 @@ body {
   *, *::before, *::after {
     border-color: var(--color-gray-300);
   }
+  thead th {
+    text-align: center;
+  }
 }
 
 /* Custom scrollbar */

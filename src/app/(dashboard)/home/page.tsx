@@ -148,11 +148,11 @@ export default function HomePage() {
         <table className="w-full h-fit text-left text-gray-500">
           <thead className="text-base text-gray-700 bg-[#F4F4F4]">
             <tr className="border-b">
-              {visibleColumns.includes("title") && <th className="text-start p-2.5 w-[40%]">ชื่อรายการ</th>}
+              {visibleColumns.includes("title") && <th className="p-2.5 w-[40%]">ชื่อรายการ</th>}
               {visibleColumns.includes("task_type_key") && <th className="p-2.5 hidden md:table-cell w-[140px]">ประเภท</th>}
-              {visibleColumns.includes("deadline_at") && <th className="text-start p-2.5 hidden md:table-cell w-[140px]">วันครบกำหนด</th>}
-              {visibleColumns.includes("priority") && <th className="text-start p-2.5 hidden md:table-cell w-[120px]">ระดับความสำคัญ</th>}
-              {visibleColumns.includes("status") && <th className="text-start p-2.5 hidden md:table-cell w-[130px]">สถานะ</th>}
+              {visibleColumns.includes("deadline_at") && <th className="p-2.5 hidden md:table-cell w-[140px]">วันครบกำหนด</th>}
+              {visibleColumns.includes("priority") && <th className="p-2.5 hidden md:table-cell w-[120px]">ระดับความสำคัญ</th>}
+              {visibleColumns.includes("status") && <th className="p-2.5 hidden md:table-cell w-[130px]">สถานะ</th>}
             </tr>
           </thead>
 
