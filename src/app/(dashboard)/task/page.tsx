@@ -173,14 +173,14 @@ export default function TaskPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-700 font-semibold text-base">
               <tr>
-                <th className="px-3 py-2 border-r w-10">#</th>
+                <th className="px-3 py-2 border-r w-10 text-center">#</th>
                 {columns.map((col) => (
                   <th
                     key={col.key}
-                    className={`px-3 py-2 border-r last:border-r-0 whitespace-nowrap ${col.sortable ? "cursor-pointer select-none hover:bg-gray-100" : ""}`}
+                    className={`px-3 py-2 border-r last:border-r-0 whitespace-nowrap text-center ${col.sortable ? "cursor-pointer select-none hover:bg-gray-100" : ""}`}
                     onClick={() => col.sortable && handleSort(col.key)}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-center gap-1">
                       {col.label}
                       {col.sortable && sortColumn === col.key && (
                         <span className="text-xs">{sortDirection === "asc" ? "▲" : "▼"}</span>
