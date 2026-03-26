@@ -7,10 +7,10 @@ import { Loader2, X, FileText, Share2, Trash2, UserPlus, ChevronDown, ChevronUp 
 import { fetchApi } from "@/lib/api";
 import { ITask, TASK_TYPE_CONFIG, TaskTypeKey } from "@/types";
 
-const dayHeaders = ["à¸­à¸²à¸—à¸´à¸•à¸¢à¹Œ", "à¸ˆà¸±à¸™à¸—à¸£à¹Œ", "à¸­à¸±à¸‡à¸„à¸²à¸£", "à¸žà¸¸à¸˜", "à¸žà¸¤à¸«à¸±à¸ªà¸šà¸”à¸µ", "à¸¨à¸¸à¸à¸£à¹Œ", "à¹€à¸ªà¸²à¸£à¹Œ"];
+const dayHeaders = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
 const thaiMonths = [
-  "à¸¡à¸à¸£à¸²à¸„à¸¡", "à¸à¸¸à¸¡à¸ à¸²à¸žà¸±à¸™à¸˜à¹Œ", "à¸¡à¸µà¸™à¸²à¸„à¸¡", "à¹€à¸¡à¸©à¸²à¸¢à¸™", "à¸žà¸¤à¸©à¸ à¸²à¸„à¸¡", "à¸¡à¸´à¸–à¸¸à¸™à¸²à¸¢à¸™",
-  "à¸à¸£à¸à¸Žà¸²à¸„à¸¡", "à¸ªà¸´à¸‡à¸«à¸²à¸„à¸¡", "à¸à¸±à¸™à¸¢à¸²à¸¢à¸™", "à¸•à¸¸à¸¥à¸²à¸„à¸¡", "à¸žà¸¤à¸¨à¸ˆà¸´à¸à¸²à¸¢à¸™", "à¸˜à¸±à¸™à¸§à¸²à¸„à¸¡",
+  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
 ];
 
 interface CalendarDay {
@@ -29,10 +29,10 @@ interface AclRule {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  reader: "à¸”à¸¹à¹„à¸”à¹‰",
-  writer: "à¹à¸à¹‰à¹„à¸‚à¹„à¸”à¹‰",
-  owner: "à¹€à¸ˆà¹‰à¸²à¸‚à¸­à¸‡",
-  freeBusyReader: "à¸”à¸¹à¸•à¸²à¸£à¸²à¸‡à¹€à¸§à¸¥à¸²",
+  reader: "ดูได้",
+  writer: "แก้ไขได้",
+  owner: "เจ้าของ",
+  freeBusyReader: "ดูตารางเวลา",
 };
 
 const ALL_TYPES = Object.keys(TASK_TYPE_CONFIG) as TaskTypeKey[];
@@ -44,11 +44,9 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [selectedDay, setSelectedDay] = useState<CalendarDay | null>(null);
 
-  // Type filter toggles
   const [visibleTypes, setVisibleTypes] = useState<Set<TaskTypeKey>>(new Set(ALL_TYPES));
   const [typesPanelOpen, setTypesPanelOpen] = useState(true);
 
-  // Share modal
   const [shareOpen, setShareOpen] = useState(false);
   const [shares, setShares] = useState<AclRule[]>([]);
   const [sharesLoading, setSharesLoading] = useState(false);
@@ -57,7 +55,6 @@ export default function CalendarPage() {
   const [inviting, setInviting] = useState(false);
   const [shareError, setShareError] = useState("");
 
-  /* Fetch tasks for current month range */
   const fetchCalendarTasks = useCallback(async () => {
     setLoading(true);
     try {
@@ -76,7 +73,6 @@ export default function CalendarPage() {
 
   useEffect(() => { fetchCalendarTasks(); }, [fetchCalendarTasks]);
 
-  /* Fetch ACL shares */
   const fetchShares = useCallback(async () => {
     setSharesLoading(true);
     try {
@@ -109,7 +105,7 @@ export default function CalendarPage() {
       setInviteEmail("");
       fetchShares();
     } catch (err: any) {
-      setShareError(err?.message || "à¹„à¸¡à¹ˆà¸ªà¸²à¸¡à¸²à¸£à¸–à¹à¸Šà¸£à¹Œà¹„à¸”à¹‰");
+      setShareError(err?.message || "ไม่สามารถแชร์ได้");
     } finally {
       setInviting(false);
     }
@@ -122,12 +118,9 @@ export default function CalendarPage() {
         body: JSON.stringify({ rule_id: ruleId }),
       });
       fetchShares();
-    } catch {
-      // ignore
-    }
+    } catch { }
   };
 
-  /* Toggle task type visibility */
   const toggleType = (key: TaskTypeKey) => {
     setVisibleTypes((prev) => {
       const next = new Set(prev);
@@ -137,7 +130,6 @@ export default function CalendarPage() {
     });
   };
 
-  /* Helper: get filtered tasks for a date */
   const getTasksForDate = useCallback(
     (dateStr: string) =>
       tasks.filter((t) => t.deadline_at?.slice(0, 10) === dateStr && visibleTypes.has(t.task_type_key as TaskTypeKey)),
@@ -152,10 +144,8 @@ export default function CalendarPage() {
   const calendarDays = useMemo<CalendarDay[]>(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const firstDayOfWeek = firstDay.getDay();
-    const daysInMonth = lastDay.getDate();
+    const firstDayOfWeek = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
     const days: CalendarDay[] = [];
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -192,36 +182,33 @@ export default function CalendarPage() {
   const formatSelDate = useMemo(() => {
     if (!selectedDay) return "";
     const d = selectedDay.dateObj;
-    return `${dayHeaders[d.getDay()]}à¸—à¸µà¹ˆ ${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+    return `${dayHeaders[d.getDay()]}ที่ ${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
   }, [selectedDay]);
 
   const prevMonth = () => { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); };
   const nextMonth = () => { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); };
-  const goToday  = () => setCurrentDate(new Date());
+  const goToday = () => setCurrentDate(new Date());
 
   return (
-    <ContentContainer titlePage="à¸›à¸à¸´à¸—à¸´à¸™">
+    <ContentContainer titlePage="ปฏิทิน">
       <div className="flex gap-4">
 
-        {/* â•â•â•â•â•â•â•â•â•â• LEFT SIDEBAR â•â•â•â•â•â•â•â•â•â• */}
+        {/* LEFT SIDEBAR */}
         <div className="w-56 flex-shrink-0 flex flex-col gap-3">
-
-          {/* Share button */}
           <button
             onClick={openShareModal}
             className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition"
           >
             <UserPlus className="w-4 h-4" />
-            à¹€à¸Šà¸´à¸à¹€à¸‚à¹‰à¸²à¸›à¸à¸´à¸—à¸´à¸™
+            เชิญเข้าปฏิทิน
           </button>
 
-          {/* Task type toggles */}
           <div className="bg-white rounded-xl border p-3">
             <button
               className="flex items-center justify-between w-full text-sm font-semibold text-gray-700 mb-2"
               onClick={() => setTypesPanelOpen((v) => !v)}
             >
-              à¸›à¸£à¸°à¹€à¸ à¸—à¸ à¸²à¸£à¸à¸´à¸ˆ
+              ประเภทภารกิจ
               {typesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
 
@@ -231,18 +218,10 @@ export default function CalendarPage() {
                   const cfg = TASK_TYPE_CONFIG[key];
                   const active = visibleTypes.has(key);
                   return (
-                    <button
-                      key={key}
-                      onClick={() => toggleType(key)}
-                      className="flex items-center gap-2.5 w-full text-left group"
-                    >
-                      {/* Colored checkbox */}
+                    <button key={key} onClick={() => toggleType(key)} className="flex items-center gap-2.5 w-full text-left group">
                       <span
                         className="w-4 h-4 rounded flex-shrink-0 border-2 flex items-center justify-center transition"
-                        style={{
-                          backgroundColor: active ? cfg.color : "transparent",
-                          borderColor: cfg.color,
-                        }}
+                        style={{ backgroundColor: active ? cfg.color : "transparent", borderColor: cfg.color }}
                       >
                         {active && (
                           <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 10">
@@ -259,27 +238,25 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* â•â•â•â•â•â•â•â•â•â• MAIN CALENDAR â•â•â•â•â•â•â•â•â•â• */}
+        {/* MAIN CALENDAR */}
         <div className="flex-1 flex flex-col gap-4 min-w-0">
-          {/* Controls */}
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-700">â—€</button>
+              <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-700">◀</button>
               <h2 className="text-xl font-bold text-[#0d1738] min-w-[180px] text-center">{currentMonthYear}</h2>
-              <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-700">â–¶</button>
-              <button onClick={goToday} className="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50 transition">à¸§à¸±à¸™à¸™à¸µà¹‰</button>
+              <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-700">▶</button>
+              <button onClick={goToday} className="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50 transition">วันนี้</button>
             </div>
             <div className="flex gap-1">
               {(["month", "week"] as const).map((m) => (
                 <button key={m} onClick={() => setViewMode(m)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${viewMode === m ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>
-                  {m === "month" ? "à¹€à¸”à¸·à¸­à¸™" : "à¸ªà¸±à¸›à¸”à¸²à¸«à¹Œ"}
+                  {m === "month" ? "เดือน" : "สัปดาห์"}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Calendar grid */}
           <div className="rounded-lg border overflow-hidden bg-white">
             <div className="grid grid-cols-7 bg-gray-50 border-b">
               {dayHeaders.map((d) => (
@@ -342,20 +319,20 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â• DAY DETAIL MODAL â•â•â•â•â•â•â•â•â•â• */}
+      {/* DAY DETAIL MODAL */}
       {selectedDay && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
           onClick={(e) => { if (e.target === e.currentTarget) setSelectedDay(null); }}>
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold text-[#0d1738]">à¸ à¸²à¸£à¸à¸´à¸ˆ {formatSelDate}</h2>
+              <h2 className="text-lg font-semibold text-[#0d1738]">ภารกิจ {formatSelDate}</h2>
               <button onClick={() => setSelectedDay(null)} className="p-1 hover:bg-gray-100 rounded text-gray-500"><X className="w-5 h-5" /></button>
             </div>
             <div className="p-4">
               {selectedDay.tasks.length > 0 ? (
                 <div className="space-y-3">
                   {selectedDay.tasks.map((t) => {
-                    const cfg = TASK_TYPE_CONFIG[t.task_type_key] || { label: t.task_type_key, icon: "ðŸ“‹", color: "#6b7280", bgColor: "#f3f4f6" };
+                    const cfg = TASK_TYPE_CONFIG[t.task_type_key] || { label: t.task_type_key, icon: "📋", color: "#6b7280", bgColor: "#f3f4f6" };
                     return (
                       <div key={t.id} className="border rounded-lg p-3">
                         <div className="flex items-start gap-3">
@@ -374,7 +351,7 @@ export default function CalendarPage() {
                 </div>
               ) : (
                 <div className="text-center py-10 text-gray-400">
-                  <p><FileText className="w-5 h-5 inline mr-1" />à¹„à¸¡à¹ˆà¸¡à¸µà¸ à¸²à¸£à¸à¸´à¸ˆà¹ƒà¸™à¸§à¸±à¸™à¸™à¸µà¹‰</p>
+                  <p><FileText className="w-5 h-5 inline mr-1" />ไม่มีภารกิจในวันนี้</p>
                 </div>
               )}
             </div>
@@ -382,26 +359,23 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* â•â•â•â•â•â•â•â•â•â• SHARE CALENDAR MODAL â•â•â•â•â•â•â•â•â•â• */}
+      {/* SHARE CALENDAR MODAL */}
       {shareOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
           onClick={(e) => { if (e.target === e.currentTarget) setShareOpen(false); }}>
           <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b">
               <div className="flex items-center gap-2">
                 <Share2 className="w-5 h-5 text-indigo-600" />
-                <h2 className="text-base font-semibold text-gray-900">à¹à¸Šà¸£à¹Œà¸›à¸à¸´à¸—à¸´à¸™à¸ à¸²à¸£à¸à¸´à¸ˆ</h2>
+                <h2 className="text-base font-semibold text-gray-900">แชร์ปฏิทินภารกิจ</h2>
               </div>
               <button onClick={() => setShareOpen(false)} className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition">
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <div className="p-5 space-y-5">
-              {/* Invite form */}
               <form onSubmit={handleInvite} className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">à¹€à¸Šà¸´à¸à¸”à¹‰à¸§à¸¢à¸­à¸µà¹€à¸¡à¸¥</label>
+                <label className="block text-sm font-medium text-gray-700">เชิญด้วยอีเมล</label>
                 {shareError && (
                   <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-sm">{shareError}</div>
                 )}
@@ -410,7 +384,7 @@ export default function CalendarPage() {
                     type="email"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="à¸­à¸µà¹€à¸¡à¸¥ Google"
+                    placeholder="อีเมล Google"
                     required
                     className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                   />
@@ -419,23 +393,21 @@ export default function CalendarPage() {
                     onChange={(e) => setInviteRole(e.target.value as "reader" | "writer")}
                     className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                   >
-                    <option value="reader">à¸”à¸¹à¹„à¸”à¹‰</option>
-                    <option value="writer">à¹à¸à¹‰à¹„à¸‚à¹„à¸”à¹‰</option>
+                    <option value="reader">ดูได้</option>
+                    <option value="writer">แก้ไขได้</option>
                   </select>
                   <button type="submit" disabled={inviting}
                     className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50 whitespace-nowrap">
-                    {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : "à¹€à¸Šà¸´à¸"}
+                    {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : "เชิญ"}
                   </button>
                 </div>
               </form>
-
-              {/* Current shares list */}
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">à¸œà¸¹à¹‰à¸—à¸µà¹ˆà¸¡à¸µà¸ªà¸´à¸—à¸˜à¸´à¹Œà¹€à¸‚à¹‰à¸²à¸–à¸¶à¸‡</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">ผู้ที่มีสิทธิ์เข้าถึง</p>
                 {sharesLoading ? (
                   <div className="flex justify-center py-4"><Loader2 className="animate-spin w-5 h-5 text-gray-400" /></div>
                 ) : shares.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-4">à¸¢à¸±à¸‡à¹„à¸¡à¹ˆà¸¡à¸µà¸à¸²à¸£à¹à¸Šà¸£à¹Œ</p>
+                  <p className="text-sm text-gray-400 text-center py-4">ยังไม่มีการแชร์</p>
                 ) : (
                   <div className="space-y-2 max-h-56 overflow-y-auto">
                     {shares.map((rule) => {
