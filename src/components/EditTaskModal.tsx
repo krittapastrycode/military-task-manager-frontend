@@ -182,9 +182,8 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
               <DatePicker
                 selected={deadlineAt}
                 onChange={(date) => setDeadlineAt(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
+                showTimeInput
+                timeInputLabel="เวลา:"
                 dateFormat="dd/MM/yyyy HH:mm"
                 placeholderText="เลือกวันและเวลา..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
