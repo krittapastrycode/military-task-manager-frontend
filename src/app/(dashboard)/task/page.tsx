@@ -21,6 +21,13 @@ import {
 } from "@/types";
 
 /* ───────────────── Column config (WPE-style) ───────────────── */
+const hexToRgba = (hex: string, alpha: number) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const ALL_COLUMNS = [
   { key: "title", label: "ข้อมูลภารกิจ", sortable: true },
   { key: "task_type_key", label: "ประเภท", sortable: false },
@@ -231,7 +238,7 @@ export default function TaskPage() {
                             <div className="flex justify-center">
                               <span
                                 className="inline-flex items-center gap-1 px-3 py-[0.3125rem] rounded-full text-sm font-medium whitespace-nowrap border"
-                                style={{ backgroundColor: typeConfig.bgColor, color: typeConfig.color, borderColor: typeConfig.color }}
+                                style={{ backgroundColor: hexToRgba(typeConfig.bgColor, 0.4), color: typeConfig.color, borderColor: typeConfig.color }}
                               >
                                 <TaskTypeIcon typeKey={task.task_type_key} className="w-3.5 h-3.5" color={typeConfig.color} /> {typeConfig.label}
                               </span>
@@ -241,7 +248,7 @@ export default function TaskPage() {
                             <div className="flex justify-center">
                               <span
                                 className="inline-flex px-3 py-[0.3125rem] rounded-full text-sm font-medium border"
-                                style={{ backgroundColor: statusConfig.bgColor, color: statusConfig.color, borderColor: statusConfig.color }}
+                                style={{ backgroundColor: hexToRgba(statusConfig.bgColor, 0.4), color: statusConfig.color, borderColor: statusConfig.color }}
                               >
                                 {statusConfig.label}
                               </span>
@@ -251,7 +258,7 @@ export default function TaskPage() {
                             <div className="flex justify-center">
                               <span
                                 className="inline-flex justify-center w-[5.5rem] py-[0.3125rem] rounded-full text-sm font-medium border"
-                                style={{ backgroundColor: priorityConfig.bgColor, color: priorityConfig.color, borderColor: priorityConfig.color }}
+                                style={{ backgroundColor: hexToRgba(priorityConfig.bgColor, 0.4), color: priorityConfig.color, borderColor: priorityConfig.color }}
                               >
                                 {priorityConfig.label}
                               </span>
