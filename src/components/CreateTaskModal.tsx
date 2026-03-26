@@ -222,6 +222,18 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                         placeholder={field.placeholder}
                       />
+                    ) : field.type === "datetime-local" ? (
+                      <DatePicker
+                        selected={content[field.key] ? new Date(content[field.key]) : null}
+                        onChange={(date) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="dd/MM/yyyy HH:mm"
+                        placeholderText={field.placeholder || "เลือกวันและเวลา..."}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+                        popperPlacement="bottom-start"
+                      />
                     ) : (
                       <input
                         type={field.type}
