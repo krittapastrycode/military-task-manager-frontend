@@ -93,30 +93,12 @@ input:-webkit-autofill:focus {
 .react-datepicker__time-container {
   border-left: 1px solid #e5e7eb;
 }
-.react-datepicker__input-time-container {
-  margin: 0;
-  padding: 8px 12px;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.react-datepicker__time-list-item:hover {
+  background-color: #e0e7ff !important;
 }
-.react-datepicker-time__caption {
-  font-size: 0.8rem;
-  color: #374151;
-  font-weight: 500;
-}
-.react-datepicker-time__input input {
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 0.875rem;
-  outline: none;
-  width: 80px;
-}
-.react-datepicker-time__input input:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+.react-datepicker__time-list-item--selected {
+  background-color: #4f46e5 !important;
+  color: #fff !important;
 }
 .react-datepicker__input-container input {
   width: 100%;
