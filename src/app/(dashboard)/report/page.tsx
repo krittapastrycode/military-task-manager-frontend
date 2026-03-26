@@ -159,7 +159,7 @@ export default function ReportPage() {
                 <thead className="bg-gray-50 text-gray-700 font-semibold">
                   <tr>
                     <th className="px-3 py-2 border-r w-10">#</th>
-                    <th className="px-3 py-2 border-r">ชื่อภารกิจ</th>
+                    <th className="px-3 py-2 border-r w-[40%]">ชื่อภารกิจ</th>
                     <th className="px-3 py-2 border-r w-[120px]">ประเภท</th>
                     <th className="px-3 py-2 border-r w-[120px]">สถานะ</th>
                     <th className="px-3 py-2 border-r w-[120px]">กำหนดส่ง</th>
