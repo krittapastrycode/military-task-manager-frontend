@@ -42,6 +42,7 @@ interface CreateTaskModalProps {
 export default function CreateTaskModal({ open, onClose, onCreated }: CreateTaskModalProps) {
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedType, setSelectedType] = useState<TaskTypeKey | null>(null);
+  const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
   const [deadlineAt, setDeadlineAt] = useState("");
   const [content, setContent] = useState<Record<string, string>>({});
@@ -53,6 +54,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
   const resetAndClose = () => {
     setStep(1);
     setSelectedType(null);
+    setTitle("");
     setPriority("medium");
     setDeadlineAt("");
     setContent({});
@@ -81,7 +83,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
       await fetchApi("/api/task", {
         method: "POST",
         body: JSON.stringify({
-          title: typeLabel,
+        title: title.trim() || typeLabel,
           task_type_key: selectedType,
           priority,
           ...(deadlineAt ? { deadline_at: deadlineAt } : {}),
@@ -181,6 +183,21 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                 {error && (
                   <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">{error}</div>
                 )}
+
+                {/* ชื่องาน */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    ชื่องาน <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+                    placeholder="ระบุชื่องาน..."
+                  />
+                </div>
 
                 {/* Section title */}
                 <div className="flex items-center gap-2 pb-1">
