@@ -177,7 +177,7 @@ export default function ReportPage() {
                       const statusConfig = STATUS_CONFIG[task.status] || STATUS_CONFIG.pending;
                       return (
                         <tr key={task.id} className="border-b hover:bg-gray-50">
-                          <td className="px-3 py-2 border-r text-gray-500">{idx + 1}</td>
+                          <td className="px-3 py-2 border-r text-gray-500 text-center">{idx + 1}</td>
                           <td className="px-3 py-2 border-r">
                             <span className="font-medium text-gray-900">{task.title}</span>
                           </td>

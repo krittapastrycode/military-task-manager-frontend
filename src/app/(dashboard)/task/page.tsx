@@ -215,7 +215,7 @@ export default function TaskPage() {
 
                   return (
                     <tr key={task.id} className="border-b hover:bg-gray-50 transition-colors">
-                      <td className="px-3 py-3 border-r text-gray-500">{rowNum}</td>
+                      <td className="px-3 py-3 border-r text-gray-500 text-center">{rowNum}</td>
 
                       {columns.map((col) => (
                         <td key={col.key} className="px-3 py-3 border-r last:border-r-0 align-top">
