@@ -74,12 +74,12 @@ export default function PersonnelPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-700 font-semibold">
               <tr>
-                <th className="px-3 py-2 border-r w-10">#</th>
+                <th className="px-3 py-2 border-r w-10 text-center">#</th>
                 <th className="px-3 py-2 border-r">ชื่อ</th>
                 <th className="px-3 py-2 border-r">อีเมล</th>
-                <th className="px-3 py-2 border-r w-[100px]">ยศ</th>
-                <th className="px-3 py-2 border-r w-[140px]">ตำแหน่ง</th>
-                <th className="px-3 py-2 w-[120px]">บทบาท</th>
+                <th className="px-3 py-2 border-r w-[100px] text-center">ยศ</th>
+                <th className="px-3 py-2 border-r w-[140px] text-center">ตำแหน่ง</th>
+                <th className="px-3 py-2 w-[120px] text-center">บทบาท</th>
               </tr>
             </thead>
             <tbody>
@@ -100,13 +100,13 @@ export default function PersonnelPage() {
                   const rowNum = pagination.per_page * (pagination.current_page - 1) + (idx + 1);
                   return (
                     <tr key={admin.id} className="border-b hover:bg-gray-50 transition-colors">
-                      <td className="px-3 py-3 border-r text-gray-500">{rowNum}</td>
+                      <td className="px-3 py-3 border-r text-gray-500 text-center">{rowNum}</td>
                       <td className="px-3 py-3 border-r font-medium text-gray-900">{admin.name}</td>
                       <td className="px-3 py-3 border-r text-gray-600">{admin.email}</td>
                       <td className="px-3 py-3 border-r text-gray-600">{admin.rank || "-"}</td>
                       <td className="px-3 py-3 border-r text-gray-600">{admin.position || "-"}</td>
                       <td className="px-3 py-3">
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1 justify-center">
                           {admin.role?.map((r) => (
                             <span key={r} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-full font-medium">
                               {r}
