@@ -228,7 +228,7 @@ export default function TaskPage() {
                         <td key={col.key} className="px-3 py-3 border-r last:border-r-0 align-top">
                           {col.key === "title" && (
                             <div className="flex flex-col gap-0.5">
-                              <span className="text-base font-medium text-gray-900">{task.title}</span>
+                              <span className="text-lg font-bold text-gray-900">{task.title}</span>
                               {task.description && (
                                 <span className="text-sm text-amber-600 line-clamp-2">{task.description}</span>
                               )}

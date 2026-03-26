@@ -202,7 +202,7 @@ export default function HomePage() {
                       {visibleColumns.includes("title") && (
                         <td className="p-2.5">
                           <div className="flex flex-col">
-                            <span className="text-base font-medium text-gray-900">{task.title}</span>
+                            <span className="text-lg font-bold text-gray-900">{task.title}</span>
                             {task.description && (
                               <span className="text-sm text-gray-500 line-clamp-1">{task.description}</span>
                             )}
