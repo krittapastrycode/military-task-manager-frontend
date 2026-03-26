@@ -230,8 +230,8 @@ export default function TaskPage() {
                           {col.key === "task_type_key" && (
                             <div className="flex justify-center">
                               <span
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap"
-                                style={{ backgroundColor: typeConfig.bgColor, color: typeConfig.color }}
+                                className="inline-flex items-center gap-1 px-3 py-[0.3125rem] rounded-full text-sm font-medium whitespace-nowrap border"
+                                style={{ backgroundColor: typeConfig.bgColor, color: typeConfig.color, borderColor: typeConfig.color }}
                               >
                                 <TaskTypeIcon typeKey={task.task_type_key} className="w-3.5 h-3.5" color={typeConfig.color} /> {typeConfig.label}
                               </span>
@@ -240,8 +240,8 @@ export default function TaskPage() {
                           {col.key === "status" && (
                             <div className="flex justify-center">
                               <span
-                                className="inline-flex px-2 py-1 rounded-full text-xs font-medium"
-                                style={{ backgroundColor: statusConfig.bgColor, color: statusConfig.color }}
+                                className="inline-flex px-3 py-[0.3125rem] rounded-full text-sm font-medium border"
+                                style={{ backgroundColor: statusConfig.bgColor, color: statusConfig.color, borderColor: statusConfig.color }}
                               >
                                 {statusConfig.label}
                               </span>
