@@ -27,7 +27,10 @@ export default function PersonnelPage() {
       if (search) params.set("search", search);
 
       const res: any = await fetchApi(`/api/admin?${params}`);
-      setAdmins(res?.data ?? []);
+      setAdmins((res?.data ?? []).map((a: any) => ({
+        ...a,
+        role: Array.isArray(a.role) ? a.role : a.role ? [a.role] : [],
+      })));
       if (res?.meta) {
         setPagination({
           current_page: res.meta.current_page,
