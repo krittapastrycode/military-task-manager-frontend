@@ -75,8 +75,8 @@ export default function PersonnelPage() {
             <thead className="bg-gray-50 text-gray-700 font-semibold">
               <tr>
                 <th className="px-3 py-2 border-r w-10 text-center">#</th>
-                <th className="px-3 py-2 border-r w-[25%]">ชื่อ</th>
-                <th className="px-3 py-2 border-r w-[25%]">อีเมล</th>
+                <th className="px-3 py-2 border-r w-[25%] text-center">ชื่อ</th>
+                <th className="px-3 py-2 border-r w-[25%] text-center">อีเมล</th>
                 <th className="px-3 py-2 border-r w-[100px] text-center">ยศ</th>
                 <th className="px-3 py-2 border-r w-[140px] text-center">ตำแหน่ง</th>
                 <th className="px-3 py-2 w-[120px] text-center">บทบาท</th>
