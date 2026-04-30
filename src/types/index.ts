@@ -93,23 +93,74 @@ export const TASK_TYPE_CONFIG: Record<TaskTypeKey, { label: string; icon: string
   venue_security:  { label: "อารักขาสถานที่",    icon: "🏛️", color: "#7c3aed", bgColor: "#ede9fe" },
 };
 
+/* ─── Protection person lists ─── */
+export const ROYAL_PERSONS = [
+  "พระบาทสมเด็จพระมหาภูมิพลอดุลยเดชมหาราช บรมนาถบพิตร",
+  "สมเด็จพระบรมราชชนนีพันปีหลวง",
+  "พระบาทสมเด็จพระเจ้าอยู่หัว",
+  "สมเด็จพระนางเจ้าฯ พระบรมราชินี",
+  "สมเด็จพระเจ้าลูกเธอ เจ้าฟ้าพัชรกิติยาภา ฯ",
+  "สมเด็จพระเจ้าลูกเธอ เจ้าฟ้าสิริวัณณวรี ฯ",
+  "สมเด็จพระเจ้าลูกยาเธอ เจ้าฟ้าทีปังกรรัศมีโชติ ฯ",
+  "สมเด็จพระกนิษฐาธิราชเจ้า กรมสมเด็จพระเทพรัตนราชสุดา ฯ สยามบรมราชกุมารี",
+  "สมเด็จเจ้าฟ้า ฯ กรมพระศรีสวางควัฒน วรขัตติยราชนารี",
+  "พระเจ้าวรวงศ์เธอ ฯ กรมหมื่นสุทธนารีนาถ",
+  "พระองค์เจ้าสิริภาจุฑาภรณ์",
+  "พระองค์เจ้าอทิตยาทรกิติคุณ",
+  "เจ้าคุณพระสินีนาฏ พิลาสกัลยาณี ฯ",
+  "ทูลกระหม่อมหญิงอุบลรัตนราชกัญญา สิริวัฒนาพรรณวดี",
+  "คุณพลอยไพลิน เจนเซน",
+  "คุณสิริกิติยา เจนเซน",
+  "สมเด็จพระสังฆราชฯ",
+  "ผู้แทนพระองค์",
+  "พระราชอาคันตุกะ",
+] as const;
+
+export const VIP_PERSONS = [
+  "ประธานองคมนตรี",
+  "องคมนตรี",
+  "นายกรัฐมนตรี",
+  "รองนายกรัฐมนตรี",
+  "รมว.กระทรวงกลาโหม",
+  "รมช.กระทรวงกลาโหม",
+  "ปล.กระทรวงกลาโหม",
+  "รอง ปล.กระทรวงกลาโหม (๑)",
+  "รอง ปล.กระทรวงกลาโหม (๒)",
+  "รอง ปล.กระทรวงกลาโหม (๓)",
+  "รอง ปล.กระทรวงกลาโหม (๔)",
+  "ผบ.ทสส.",
+  "รอง ผบ.ทสส.",
+  "เสธ.ทหาร",
+  "รอง เสธ.ทหาร",
+  "ผบ.ทบ.",
+  "ประธานคณะที่ปรึกษา ทบ.",
+  "รอง ผบ.ทบ.",
+  "ผช.ผบ.ทบ.(๑)",
+  "ผช.ผบ.ทบ.(๒)",
+  "เสธ.ทบ.",
+  "รอง เสธ.ทบ.(๑)",
+  "รอง เสธ.ทบ.(๒)",
+  "รอง เสธ.ทบ.(๓)",
+] as const;
+
 /* ─── Dynamic fields per task type (stored in content JSON) ─── */
 export interface ITaskTypeField {
   key: string;
   label: string;
-  type: "text" | "datetime-local" | "textarea";
+  type: "text" | "datetime-local" | "textarea" | "select";
   placeholder?: string;
   required?: boolean;
+  options?: string[];
 }
 
 export const TASK_TYPE_FIELDS: Record<TaskTypeKey, ITaskTypeField[]> = {
   royal_security: [
-    { key: "royal_name", label: "ชื่อพระบรมวงศานุวงศ์ / รหัสประจำพระองค์", type: "text", placeholder: "ระบุพระนาม หรือ รหัสประจำพระองค์", required: true },
+    { key: "royal_name", label: "บุคคลอารักขา", type: "select", options: [...ROYAL_PERSONS], placeholder: "เลือกพระบรมวงศานุวงศ์...", required: true },
     { key: "origin", label: "ออกมาจากที่ใด", type: "text", placeholder: "สถานที่ต้นทาง" },
     { key: "destination", label: "จะเสด็จไปที่ไหน", type: "text", placeholder: "สถานที่ปลายทาง" },
   ],
   vip_protection: [
-    { key: "vip_name", label: "ชื่อ VIP", type: "text", placeholder: "ชื่อ-นามสกุล บุคคลสำคัญ", required: true },
+    { key: "vip_name", label: "บุคคลอารักขา", type: "select", options: [...VIP_PERSONS], placeholder: "เลือกบุคคลสำคัญ...", required: true },
     { key: "vehicle_info", label: "ทะเบียน สี ยี่ห้อ รถ", type: "text", placeholder: "เช่น กก-1234 สีดำ Toyota Camry" },
     { key: "origin", label: "เดินทางออกจากที่ไหน", type: "text", placeholder: "สถานที่ต้นทาง" },
     { key: "arrival_time", label: "เวลาออกเดินทางมายังพื้นที่ ทอ.", type: "datetime-local" },

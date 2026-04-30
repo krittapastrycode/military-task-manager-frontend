@@ -4,6 +4,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeInput24H from "@/components/TimeInput24H";
+import SearchableSelect from "@/components/SearchableSelect";
 import { fetchApi } from "@/lib/api";
 import {
   Crown,
@@ -214,7 +215,15 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       {field.label} {field.required && <span className="text-red-500">*</span>}
                     </label>
-                    {field.type === "textarea" ? (
+                    {field.type === "select" ? (
+                      <SearchableSelect
+                        value={content[field.key] || ""}
+                        onChange={(v) => setContent({ ...content, [field.key]: v })}
+                        options={field.options ?? []}
+                        placeholder={field.placeholder}
+                        required={field.required}
+                      />
+                    ) : field.type === "textarea" ? (
                       <textarea
                         value={content[field.key] || ""}
                         onChange={(e) => setContent({ ...content, [field.key]: e.target.value })}
@@ -226,7 +235,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     ) : field.type === "datetime-local" ? (
                       <DatePicker
                         selected={content[field.key] ? new Date(content[field.key]) : null}
-                        onChange={(date) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
+                        onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
                         showTimeInput
                         timeInputLabel="เวลา:"
                         customTimeInput={<TimeInput24H />}
