@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TimeInput24H from "@/components/TimeInput24H";
+import SearchableSelect from "@/components/SearchableSelect";
 import { X, Loader2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import {
   ITask,
   TASK_TYPE_CONFIG,
+  TASK_TYPE_FIELDS,
   STATUS_CONFIG,
   PRIORITY_CONFIG,
   TaskStatus,
@@ -35,6 +37,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
   const [status, setStatus] = useState<TaskStatus>("pending");
   const [priority, setPriority] = useState("medium");
   const [deadlineAt, setDeadlineAt] = useState<Date | null>(null);
+  const [content, setContent] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -45,6 +48,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
     setStatus(task.status);
     setPriority(task.priority);
     setDeadlineAt(task.deadline_at ? new Date(task.deadline_at) : null);
+    setContent((task.content as Record<string, string>) ?? {});
     setError("");
   }, [task]);
 
@@ -65,6 +69,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
           status,
           priority,
           deadline_at: deadlineAt ? deadlineAt.toISOString() : null,
+          content,
         }),
       });
       onUpdated();
@@ -115,6 +120,54 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
               />
             </div>
+
+            {/* Dynamic type-specific fields (e.g. บุคคลอารักขา) */}
+            {TASK_TYPE_FIELDS[task.task_type_key]?.map((field) => (
+              <div key={field.key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
+                {field.type === "select" ? (
+                  <SearchableSelect
+                    value={content[field.key] || ""}
+                    onChange={(v) => setContent({ ...content, [field.key]: v })}
+                    options={field.options ?? []}
+                    placeholder={field.placeholder}
+                    required={field.required}
+                  />
+                ) : field.type === "datetime-local" ? (
+                  <DatePicker
+                    selected={content[field.key] ? new Date(content[field.key]) : null}
+                    onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
+                    showTimeInput
+                    timeInputLabel="เวลา:"
+                    customTimeInput={<TimeInput24H />}
+                    dateFormat="dd/MM/yyyy HH:mm"
+                    placeholderText={field.placeholder || "เลือกวันและเวลา..."}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
+                    popperPlacement="bottom-start"
+                  />
+                ) : field.type === "textarea" ? (
+                  <textarea
+                    value={content[field.key] || ""}
+                    onChange={(e) => setContent({ ...content, [field.key]: e.target.value })}
+                    rows={2}
+                    required={field.required}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 resize-none"
+                    placeholder={field.placeholder}
+                  />
+                ) : (
+                  <input
+                    type={field.type}
+                    value={content[field.key] || ""}
+                    onChange={(e) => setContent({ ...content, [field.key]: e.target.value })}
+                    required={field.required}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
+                    placeholder={field.placeholder}
+                  />
+                )}
+              </div>
+            ))}
 
             {/* Description */}
             <div>
