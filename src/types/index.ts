@@ -147,7 +147,7 @@ export const VIP_PERSONS = [
 export interface ITaskTypeField {
   key: string;
   label: string;
-  type: "text" | "datetime-local" | "textarea" | "select";
+  type: "text" | "datetime-local" | "textarea" | "select" | "url";
   placeholder?: string;
   required?: boolean;
   options?: string[];
@@ -158,6 +158,7 @@ export const TASK_TYPE_FIELDS: Record<TaskTypeKey, ITaskTypeField[]> = {
     { key: "royal_name", label: "บุคคลอารักขา", type: "select", options: [...ROYAL_PERSONS], placeholder: "เลือกพระบรมวงศานุวงศ์...", required: true },
     { key: "origin", label: "ออกมาจากที่ใด", type: "text", placeholder: "สถานที่ต้นทาง" },
     { key: "destination", label: "จะเสด็จไปที่ไหน", type: "text", placeholder: "สถานที่ปลายทาง" },
+    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
   ],
   vip_protection: [
     { key: "vip_name", label: "บุคคลอารักขา", type: "select", options: [...VIP_PERSONS], placeholder: "เลือกบุคคลสำคัญ...", required: true },
@@ -165,10 +166,12 @@ export const TASK_TYPE_FIELDS: Record<TaskTypeKey, ITaskTypeField[]> = {
     { key: "origin", label: "เดินทางออกจากที่ไหน", type: "text", placeholder: "สถานที่ต้นทาง" },
     { key: "arrival_time", label: "เวลาออกเดินทางมายังพื้นที่ ทอ.", type: "datetime-local" },
     { key: "destination", label: "จะเดินทางไปที่ไหน", type: "text", placeholder: "สถานที่ปลายทาง" },
+    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
   ],
   convoy: [
     { key: "vehicle_or_group", label: "ทะเบียน/ยี่ห้อรถ หรือชื่อคณะ", type: "text", placeholder: "เช่น กก-1234 สีดำ หรือ คณะกรรมาธิการฯ", required: true },
     { key: "destination", label: "ไปที่ไหน", type: "text", placeholder: "สถานที่ปลายทาง" },
+    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
   ],
   traffic: [
     { key: "vehicle_info", label: "ทะเบียน สี ยี่ห้อ รถ", type: "text", placeholder: "เช่น กก-1234 สีดำ Toyota Camry" },

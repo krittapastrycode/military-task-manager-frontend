@@ -16,6 +16,7 @@ import {
   ChevronDown,
   X,
   ArrowRight,
+  MapPin,
 } from "lucide-react";
 import {
   TASK_TYPE_CONFIG,
@@ -80,6 +81,15 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedType) return;
+
+    const missingRequired = fields.find(
+      (f) => f.required && !content[f.key]?.trim()
+    );
+    if (missingRequired) {
+      setError(`กรุณากรอก "${missingRequired.label}" ก่อนดำเนินการต่อ`);
+      return;
+    }
+
     setCreating(true);
     setError("");
     try {
@@ -244,6 +254,30 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                         popperPlacement="bottom-start"
                       />
+                    ) : field.type === "url" ? (
+                      <div className="space-y-1">
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                          <input
+                            type="url"
+                            value={content[field.key] || ""}
+                            onChange={(e) => setContent({ ...content, [field.key]: e.target.value })}
+                            required={field.required}
+                            className="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+                            placeholder={field.placeholder}
+                          />
+                        </div>
+                        {content[field.key] && (
+                          <a
+                            href={content[field.key]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:underline"
+                          >
+                            <MapPin className="w-3 h-3" /> เปิด Google Maps
+                          </a>
+                        )}
+                      </div>
                     ) : (
                       <input
                         type={field.type}
