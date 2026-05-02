@@ -254,6 +254,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                         customTimeInput={<TimeInput24H />}
                         dateFormat="dd/MM/yyyy HH:mm"
                         placeholderText={field.placeholder || "เลือกวันและเวลา..."}
+                        minDate={new Date()}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                         popperPlacement="bottom-start"
                       />
