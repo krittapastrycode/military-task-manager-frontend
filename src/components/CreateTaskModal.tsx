@@ -6,7 +6,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import TimeInput24H from "@/components/TimeInput24H";
 import SearchableSelect from "@/components/SearchableSelect";
 import { fetchApi } from "@/lib/api";
-import { toLocalISOString } from "@/lib/dateUtils";
 import {
   Crown,
   ShieldCheck,
@@ -101,7 +100,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
         title: title.trim() || typeLabel,
           task_type_key: selectedType,
           priority,
-          ...(deadlineAt ? { deadline_at: toLocalISOString(deadlineAt) } : {}),
+          ...(deadlineAt ? { deadline_at: deadlineAt.toISOString() } : {}),
           content,
         }),
       });
@@ -246,7 +245,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     ) : field.type === "datetime-local" ? (
                       <DatePicker
                         selected={content[field.key] ? new Date(content[field.key]) : null}
-                        onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? toLocalISOString(date) : "" })}
+                        onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
                         showTimeInput
                         timeInputLabel="เวลา:"
                         customTimeInput={<TimeInput24H />}

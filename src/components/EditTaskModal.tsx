@@ -7,7 +7,6 @@ import TimeInput24H from "@/components/TimeInput24H";
 import SearchableSelect from "@/components/SearchableSelect";
 import { X, Loader2, MapPin } from "lucide-react";
 import { fetchApi } from "@/lib/api";
-import { toLocalISOString } from "@/lib/dateUtils";
 import {
   ITask,
   TASK_TYPE_CONFIG,
@@ -80,7 +79,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
           description: description || null,
           status,
           priority,
-          deadline_at: deadlineAt ? toLocalISOString(deadlineAt) : null,
+          deadline_at: deadlineAt ? deadlineAt.toISOString() : null,
           content,
         }),
       });
@@ -150,7 +149,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
                 ) : field.type === "datetime-local" ? (
                   <DatePicker
                     selected={content[field.key] ? new Date(content[field.key]) : null}
-                    onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? toLocalISOString(date) : "" })}
+                    onChange={(date: Date | null) => setContent({ ...content, [field.key]: date ? date.toISOString() : "" })}
                     showTimeInput
                     timeInputLabel="เวลา:"
                     customTimeInput={<TimeInput24H />}

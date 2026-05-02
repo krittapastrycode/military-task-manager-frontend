@@ -133,7 +133,10 @@ export default function CalendarPage() {
 
   const getTasksForDate = useCallback(
     (dateStr: string) =>
-      tasks.filter((t) => t.deadline_at?.slice(0, 10) === dateStr && visibleTypes.has(t.task_type_key as TaskTypeKey)),
+      tasks.filter((t) => {
+        if (!t.deadline_at) return false;
+        return toLocalDateString(new Date(t.deadline_at)) === dateStr && visibleTypes.has(t.task_type_key as TaskTypeKey);
+      }),
     [tasks, visibleTypes]
   );
 
