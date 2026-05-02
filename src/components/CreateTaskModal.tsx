@@ -299,12 +299,13 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                   <label className="block text-sm font-medium text-gray-700 mb-1">วันปฏิบัติภารกิจ</label>
                   <DatePicker
                     selected={deadlineAt}
-                    onChange={(date) => setDeadlineAt(date)}
+                    onChange={(date) => { setDeadlineAt(date); if (endAt && date && endAt < date) setEndAt(null); }}
                     showTimeInput
                     timeInputLabel="เวลา:"
                     customTimeInput={<TimeInput24H />}
                     dateFormat="dd/MM/yyyy HH:mm"
                     placeholderText="เลือกวันและเวลา..."
+                    minDate={new Date()}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                     popperPlacement="bottom-start"
                   />
@@ -321,6 +322,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     customTimeInput={<TimeInput24H />}
                     dateFormat="dd/MM/yyyy HH:mm"
                     placeholderText="เลือกเวลาเสร็จงาน..."
+                    minDate={deadlineAt ?? new Date()}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                     popperPlacement="bottom-start"
                   />
