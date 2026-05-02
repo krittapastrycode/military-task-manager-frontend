@@ -37,6 +37,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
   const [status, setStatus] = useState<TaskStatus>("pending");
   const [priority, setPriority] = useState("medium");
   const [deadlineAt, setDeadlineAt] = useState<Date | null>(null);
+  const [endAt, setEndAt] = useState<Date | null>(null);
   const [content, setContent] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -48,6 +49,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
     setStatus(task.status);
     setPriority(task.priority);
     setDeadlineAt(task.deadline_at ? new Date(task.deadline_at) : null);
+    setEndAt(task.end_at ? new Date(task.end_at) : null);
     setContent((task.content as Record<string, string>) ?? {});
     setError("");
   }, [task]);
@@ -80,6 +82,7 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
           status,
           priority,
           deadline_at: deadlineAt ? deadlineAt.toISOString() : null,
+          end_at: endAt ? endAt.toISOString() : null,
           content,
         }),
       });
@@ -276,6 +279,22 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
                 customTimeInput={<TimeInput24H />}
                 dateFormat="dd/MM/yyyy HH:mm"
                 placeholderText="เลือกวันและเวลา..."
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
+                popperPlacement="bottom-start"
+              />
+            </div>
+
+            {/* เวลาเสร็จงาน */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">เวลาเสร็จงาน</label>
+              <DatePicker
+                selected={endAt}
+                onChange={(date) => setEndAt(date)}
+                showTimeInput
+                timeInputLabel="เวลา:"
+                customTimeInput={<TimeInput24H />}
+                dateFormat="dd/MM/yyyy HH:mm"
+                placeholderText="เลือกเวลาเสร็จงาน..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
                 popperPlacement="bottom-start"
               />

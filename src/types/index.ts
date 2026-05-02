@@ -43,6 +43,7 @@ export interface ITask {
   task_type_key: TaskTypeKey;
   priority: "low" | "medium" | "high" | "urgent";
   deadline_at: string | null;
+  end_at: string | null;
   completed_at: string | null;
   content: Record<string, any> | null;
   meta: Record<string, any> | null;

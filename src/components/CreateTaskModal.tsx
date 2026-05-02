@@ -50,6 +50,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
   const [deadlineAt, setDeadlineAt] = useState<Date | null>(null);
+  const [endAt, setEndAt] = useState<Date | null>(null);
   const [content, setContent] = useState<Record<string, string>>({});
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
@@ -62,6 +63,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
     setTitle("");
     setPriority("medium");
     setDeadlineAt(null);
+    setEndAt(null);
     setContent({});
     setError("");
     onClose();
@@ -101,6 +103,7 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
           task_type_key: selectedType,
           priority,
           ...(deadlineAt ? { deadline_at: deadlineAt.toISOString() } : {}),
+          ...(endAt ? { end_at: endAt.toISOString() } : {}),
           content,
         }),
       });
@@ -302,6 +305,22 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                     customTimeInput={<TimeInput24H />}
                     dateFormat="dd/MM/yyyy HH:mm"
                     placeholderText="เลือกวันและเวลา..."
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
+                    popperPlacement="bottom-start"
+                  />
+                </div>
+
+                {/* เวลาเสร็จงาน */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">เวลาเสร็จงาน</label>
+                  <DatePicker
+                    selected={endAt}
+                    onChange={(date) => setEndAt(date)}
+                    showTimeInput
+                    timeInputLabel="เวลา:"
+                    customTimeInput={<TimeInput24H />}
+                    dateFormat="dd/MM/yyyy HH:mm"
+                    placeholderText="เลือกเวลาเสร็จงาน..."
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                     popperPlacement="bottom-start"
                   />
