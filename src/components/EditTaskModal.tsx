@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import TimeInput24H from "@/components/TimeInput24H";
 import SearchableSelect from "@/components/SearchableSelect";
 import { X, Loader2, MapPin } from "lucide-react";
+import MapLinkField from "@/components/MapLinkField";
 import { fetchApi } from "@/lib/api";
 import {
   ITask,
@@ -169,6 +170,12 @@ export default function EditTaskModal({ task, onClose, onUpdated }: Props) {
                     required={field.required}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 resize-none"
                     placeholder={field.placeholder}
+                  />
+                ) : field.type === "map" ? (
+                  <MapLinkField
+                    value={content[field.key] || ""}
+                    onChange={(v) => setContent({ ...content, [field.key]: v })}
+                    required={field.required}
                   />
                 ) : field.type === "url" ? (
                   <div className="space-y-1">

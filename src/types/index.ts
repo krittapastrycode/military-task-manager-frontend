@@ -148,7 +148,7 @@ export const VIP_PERSONS = [
 export interface ITaskTypeField {
   key: string;
   label: string;
-  type: "text" | "datetime-local" | "textarea" | "select" | "url";
+  type: "text" | "datetime-local" | "textarea" | "select" | "url" | "map";
   placeholder?: string;
   required?: boolean;
   options?: string[];
@@ -157,16 +157,16 @@ export interface ITaskTypeField {
 export const TASK_TYPE_FIELDS: Record<TaskTypeKey, ITaskTypeField[]> = {
   royal_security: [
     { key: "royal_name", label: "บุคคลอารักขา", type: "select", options: [...ROYAL_PERSONS], placeholder: "เลือกพระบรมวงศานุวงศ์...", required: true },
-    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
+    { key: "map_link", label: "เส้นทาง Google Maps", type: "map" },
   ],
   vip_protection: [
     { key: "vip_name", label: "บุคคลอารักขา", type: "select", options: [...VIP_PERSONS], placeholder: "เลือกบุคคลสำคัญ...", required: true },
     { key: "vehicle_info", label: "ทะเบียน สี ยี่ห้อ รถ", type: "text", placeholder: "เช่น กก-1234 สีดำ Toyota Camry" },
-    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
+    { key: "map_link", label: "เส้นทาง Google Maps", type: "map" },
   ],
   convoy: [
     { key: "vehicle_or_group", label: "ทะเบียน/ยี่ห้อรถ หรือชื่อคณะ", type: "text", placeholder: "เช่น กก-1234 สีดำ หรือ คณะกรรมาธิการฯ", required: true },
-    { key: "map_link", label: "ลิงก์ Google Maps เส้นทาง", type: "url", placeholder: "วางลิงก์ Google Maps ที่นี่..." },
+    { key: "map_link", label: "เส้นทาง Google Maps", type: "map" },
   ],
   traffic: [
     { key: "vehicle_info", label: "ทะเบียน สี ยี่ห้อ รถ", type: "text", placeholder: "เช่น กก-1234 สีดำ Toyota Camry" },

@@ -18,6 +18,7 @@ import {
   ArrowRight,
   MapPin,
 } from "lucide-react";
+import MapLinkField from "@/components/MapLinkField";
 import {
   TASK_TYPE_CONFIG,
   TASK_TYPE_FIELDS,
@@ -257,6 +258,12 @@ export default function CreateTaskModal({ open, onClose, onCreated }: CreateTask
                         minDate={new Date()}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition"
                         popperPlacement="bottom-start"
+                      />
+                    ) : field.type === "map" ? (
+                      <MapLinkField
+                        value={content[field.key] || ""}
+                        onChange={(v) => setContent({ ...content, [field.key]: v })}
+                        required={field.required}
                       />
                     ) : field.type === "url" ? (
                       <div className="space-y-1">
