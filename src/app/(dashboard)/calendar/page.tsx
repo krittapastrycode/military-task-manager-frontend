@@ -5,6 +5,7 @@ import ContentContainer from "@/components/ContentContainer";
 import TaskTypeIcon from "@/components/TaskTypeIcon";
 import { Loader2, X, FileText, Share2, Trash2, UserPlus, ChevronDown, ChevronUp } from "lucide-react";
 import { fetchApi } from "@/lib/api";
+import { toLocalDateString } from "@/lib/dateUtils";
 import { ITask, TASK_TYPE_CONFIG, TaskTypeKey } from "@/types";
 
 const dayHeaders = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
@@ -60,8 +61,8 @@ export default function CalendarPage() {
     try {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
-      const start = new Date(year, month - 1, 1).toISOString().slice(0, 10);
-      const end = new Date(year, month + 2, 0).toISOString().slice(0, 10);
+      const start = toLocalDateString(new Date(year, month - 1, 1));
+      const end = toLocalDateString(new Date(year, month + 2, 0));
       const res: any = await fetchApi(`/api/task?per_page=200&date_from=${start}&date_to=${end}`);
       setTasks(res?.data ?? []);
     } catch {
@@ -153,17 +154,17 @@ export default function CalendarPage() {
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
       const date = prevMonthLastDay - i;
       const d = new Date(year, month - 1, date);
-      days.push({ date, isCurrentMonth: false, isToday: false, tasks: getTasksForDate(d.toISOString().slice(0, 10)), dateObj: d, dateStr: d.toISOString().slice(0, 10) });
+      days.push({ date, isCurrentMonth: false, isToday: false, tasks: getTasksForDate(toLocalDateString(d)), dateObj: d, dateStr: toLocalDateString(d) });
     }
     for (let date = 1; date <= daysInMonth; date++) {
       const d = new Date(year, month, date); d.setHours(0, 0, 0, 0);
-      const dateStr = d.toISOString().slice(0, 10);
+      const dateStr = toLocalDateString(d);
       days.push({ date, isCurrentMonth: true, isToday: d.getTime() === today.getTime(), tasks: getTasksForDate(dateStr), dateObj: d, dateStr });
     }
     const remaining = 42 - days.length;
     for (let date = 1; date <= remaining; date++) {
       const d = new Date(year, month + 1, date);
-      days.push({ date, isCurrentMonth: false, isToday: false, tasks: getTasksForDate(d.toISOString().slice(0, 10)), dateObj: d, dateStr: d.toISOString().slice(0, 10) });
+      days.push({ date, isCurrentMonth: false, isToday: false, tasks: getTasksForDate(toLocalDateString(d)), dateObj: d, dateStr: toLocalDateString(d) });
     }
     return days;
   }, [currentDate, getTasksForDate]);
@@ -174,7 +175,7 @@ export default function CalendarPage() {
     startOfWeek.setDate(today.getDate() - today.getDay());
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(startOfWeek); d.setDate(startOfWeek.getDate() + i);
-      const dateStr = d.toISOString().slice(0, 10);
+      const dateStr = toLocalDateString(d);
       return { date: d.getDate(), dayName: dayHeaders[i], isToday: d.toDateString() === today.toDateString(), tasks: getTasksForDate(dateStr) };
     });
   }, [getTasksForDate]);
