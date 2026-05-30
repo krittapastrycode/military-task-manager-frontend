@@ -72,6 +72,7 @@ input:-webkit-autofill:focus {
     overflow: visible !important;
   }
   #print-area * { visibility: visible !important; }
+  #print-task-table { break-before: page; }
   @page { margin: 10mm; size: A4 landscape; }
 }
 

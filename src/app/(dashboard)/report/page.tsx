@@ -313,8 +313,8 @@ export default function ReportPage() {
                 </div>
               </div>
 
-              {/* Task table */}
-              <div className="overflow-x-auto rounded-lg border">
+              {/* Task table — starts on new page when printing */}
+              <div id="print-task-table" className="overflow-x-auto rounded-lg border">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-gray-50 text-gray-700 font-semibold">
                     <tr>
