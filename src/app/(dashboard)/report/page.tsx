@@ -105,79 +105,8 @@ export default function ReportPage() {
     fetchChart();
   }, [fetchChart]);
 
-  const handleExportPDF = async () => {
-    if (!printRef.current) return;
-
-    // Build completed_at date range matching the chart period
-    let completedFrom: string, completedTo: string;
-    if (chartQuarter) {
-      const q = parseInt(chartQuarter);
-      const sm = (q - 1) * 3 + 1;
-      const endMonth = sm + 2;
-      completedFrom = `${chartYear}-${String(sm).padStart(2, "0")}-01`;
-      const lastDay = new Date(chartYear, endMonth, 0).getDate();
-      completedTo = `${chartYear}-${String(endMonth).padStart(2, "0")}-${lastDay}`;
-    } else {
-      completedFrom = `${chartYear}-01-01`;
-      completedTo = `${chartYear}-12-31`;
-    }
-
-    // Fetch tasks for the exact chart period
-    try {
-      const params = new URLSearchParams({
-        per_page: "500",
-        completed_from: completedFrom,
-        completed_to: completedTo,
-      });
-      const res: any = await fetchApi(`/api/task?${params}`);
-      setPdfTasks(res?.data ?? []);
-    } catch {
-      setPdfTasks(tasks);
-    }
-
-    setPdfMode(true);
-    await new Promise((r) => setTimeout(r, 300));
-
-    // Fix ResponsiveContainer: html2canvas clones the DOM without firing ResizeObserver,
-    // so the SVG may get width=0. Pin the actual rendered width before capture.
-    const svgEl = chartContainerRef.current?.querySelector("svg");
-    const originalWidth = svgEl?.getAttribute("width") ?? null;
-    if (svgEl && chartContainerRef.current) {
-      svgEl.setAttribute("width", String(chartContainerRef.current.offsetWidth));
-    }
-
-    try {
-      const html2canvas = (await import("html2canvas")).default;
-      const jsPDF = (await import("jspdf")).default;
-      const canvas = await html2canvas(printRef.current!, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("l", "mm", "a4");
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pageW) / canvas.width;
-      let y = 0, page = 0;
-      while (y < imgH) {
-        if (page > 0) pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, -y, pageW, imgH);
-        y += pageH;
-        page++;
-      }
-      const label = chartQuarter ? `Q${chartQuarter}` : "ทั้งปี";
-      pdf.save(`รายงานอารักขา_${chartYear}_${label}.pdf`);
-    } finally {
-      // Restore original SVG width attribute
-      if (svgEl) {
-        if (originalWidth !== null) svgEl.setAttribute("width", originalWidth);
-        else svgEl.removeAttribute("width");
-      }
-      setPdfMode(false);
-      setPdfTasks([]);
-    }
+  const handleExportPDF = () => {
+    window.print();
   };
 
   const displayTasks = pdfMode ? pdfTasks : tasks;
@@ -297,7 +226,7 @@ export default function ReportPage() {
         </div>
 
         {/* ── Printable area ── */}
-        <div ref={printRef} className="flex flex-col gap-4 bg-white">
+        <div ref={printRef} id="print-area" className="flex flex-col gap-4 bg-white">
           {/* Print header */}
           <div className="mb-2 text-sm text-gray-500">
             ประมวลผล: {new Date().toLocaleDateString("th-TH")} | ปี {chartYear}
@@ -315,7 +244,7 @@ export default function ReportPage() {
                 <Loader2 className="animate-spin w-6 h-6 text-gray-400" />
               </div>
             ) : (
-              <div ref={chartContainerRef} className="h-[320px]">
+              <div className="h-[320px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />

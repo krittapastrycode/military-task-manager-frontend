@@ -45,6 +45,14 @@ input:-webkit-autofill:focus {
   ring-color: #f87171;
 }
 
+/* ─── Print styles (PDF export via window.print) ─── */
+@media print {
+  body * { visibility: hidden !important; }
+  #print-area { visibility: visible !important; position: fixed; top: 0; left: 0; width: 100%; padding: 16px; background: white; }
+  #print-area * { visibility: visible !important; }
+  @page { margin: 10mm; size: A4 landscape; }
+}
+
 /* ─── react-datepicker custom styles ─── */
 .react-datepicker-wrapper {
   width: 100%;
