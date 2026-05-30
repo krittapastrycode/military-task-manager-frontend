@@ -9,6 +9,7 @@ import TaskFilterBar from "@/components/TaskFilterBar";
 import ColumnSelector from "@/components/ColumnSelector";
 import { Search, Loader2, FileText, Plus } from "lucide-react";
 import { fetchApi } from "@/lib/api";
+import { getRole } from "@/lib/auth";
 import { ITask, TASK_TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "@/types";
 
 interface SectionData {
@@ -44,6 +45,13 @@ export default function HomePage() {
   const [taskTypeFilter, setTaskTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE);
+  const [role, setRole] = useState<string>("user");
+
+  useEffect(() => {
+    setRole(getRole());
+  }, []);
+
+  const canCreate = role === "admin" || role === "commander";
 
   const toggleColumn = (key: string) => {
     setVisibleColumns((prev) =>
@@ -102,12 +110,14 @@ export default function HomePage() {
     <ContentContainer
       titlePage="ภารกิจวันนี้"
       rightSideContent={
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
-        >
-          <span><Plus className="w-4 h-4" /></span> สร้างภารกิจ
-        </button>
+        canCreate && (
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
+          >
+            <span><Plus className="w-4 h-4" /></span> สร้างภารกิจ
+          </button>
+        )
       }
     >
       <div className="flex flex-col gap-4">

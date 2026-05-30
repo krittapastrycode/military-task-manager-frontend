@@ -8,8 +8,9 @@ import EditTaskModal from "@/components/EditTaskModal";
 import TaskTypeIcon from "@/components/TaskTypeIcon";
 import TaskFilterBar from "@/components/TaskFilterBar";
 import ColumnSelector from "@/components/ColumnSelector";
-import { Search, Loader2, Plus, Eye, Pencil } from "lucide-react";
+import { Search, Loader2, Plus, Eye, Pencil, CheckCircle2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
+import { getRole } from "@/lib/auth";
 import {
   ITask,
   IPagination,
@@ -72,6 +73,13 @@ export default function TaskPage() {
   const [detailTask, setDetailTask] = useState<ITask | null>(null);
   const [editTask, setEditTask] = useState<ITask | null>(null);
 
+  // Role
+  const [role, setRole] = useState<string>("user");
+
+  useEffect(() => {
+    setRole(getRole());
+  }, []);
+
   /* ─── Fetch ─── */
   const fetchTasks = useCallback(async (page = 1) => {
     setLoading(true);
@@ -107,6 +115,14 @@ export default function TaskPage() {
     fetchTasks(1);
   }, [fetchTasks]);
 
+  /* ─── Complete handler ─── */
+  const handleComplete = async (id: string) => {
+    try {
+      await fetchApi(`/api/task/complete/${id}`, { method: "PATCH" });
+      fetchTasks(pagination.current_page);
+    } catch {}
+  };
+
   /* ─── Sort handler ─── */
   const handleSort = (key: string) => {
     if (sortColumn === key) {
@@ -137,13 +153,15 @@ export default function TaskPage() {
     <ContentContainer
       titlePage="จัดการภารกิจ"
       rightSideContent={
-        <button
-          type="button"
-          onClick={() => setShowCreateModal(true)}
-          className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" /> สร้างภารกิจ
-        </button>
+        role !== "user" && (
+          <button
+            type="button"
+            onClick={() => setShowCreateModal(true)}
+            className="px-5 py-2 bg-indigo-600 text-white rounded-lg text-base font-medium hover:bg-indigo-700 transition flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" /> สร้างภารกิจ
+          </button>
+        )
       }
     >
       <div className="flex flex-col gap-3">
@@ -290,11 +308,20 @@ export default function TaskPage() {
                                 className="px-3 py-1.5 bg-sky-50 text-sky-600 rounded text-xs font-medium hover:bg-sky-100 transition flex items-center gap-1">
                                 <Eye className="w-3.5 h-3.5" /> รายละเอียด
                               </button>
-                              <button
-                                onClick={() => setEditTask(task)}
-                                className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-medium hover:bg-blue-100 transition flex items-center gap-1">
-                                <Pencil className="w-3.5 h-3.5" /> แก้ไข
-                              </button>
+                              {role !== "user" && (
+                                <button
+                                  onClick={() => setEditTask(task)}
+                                  className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-medium hover:bg-blue-100 transition flex items-center gap-1">
+                                  <Pencil className="w-3.5 h-3.5" /> แก้ไข
+                                </button>
+                              )}
+                              {role === "user" && ["progress", "pending"].includes(task.status) && (
+                                <button
+                                  onClick={() => handleComplete(task.id)}
+                                  className="px-3 py-1.5 bg-green-50 text-green-600 rounded text-xs font-medium hover:bg-green-100 transition flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5" /> เสร็จสิ้น
+                                </button>
+                              )}
                             </div>
                           )}
                         </td>
