@@ -10,7 +10,7 @@ import TaskFilterBar from "@/components/TaskFilterBar";
 import ColumnSelector from "@/components/ColumnSelector";
 import { Search, Loader2, Plus, Eye, Pencil, CheckCircle2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
-import { getRole } from "@/lib/auth";
+import { canCreateTask } from "@/lib/auth";
 import {
   ITask,
   IPagination,
@@ -74,10 +74,12 @@ export default function TaskPage() {
   const [editTask, setEditTask] = useState<ITask | null>(null);
 
   // Role
-  const [role, setRole] = useState<string>("user");
+  const [canCreate, setCanCreate] = useState(() =>
+    typeof window !== "undefined" ? canCreateTask() : false
+  );
 
   useEffect(() => {
-    setRole(getRole());
+    setCanCreate(canCreateTask());
   }, []);
 
   /* ─── Fetch ─── */
@@ -153,7 +155,7 @@ export default function TaskPage() {
     <ContentContainer
       titlePage="จัดการภารกิจ"
       rightSideContent={
-        role !== "user" && (
+        canCreate && (
           <button
             type="button"
             onClick={() => setShowCreateModal(true)}
@@ -308,14 +310,14 @@ export default function TaskPage() {
                                 className="px-3 py-1.5 bg-sky-50 text-sky-600 rounded text-xs font-medium hover:bg-sky-100 transition flex items-center gap-1">
                                 <Eye className="w-3.5 h-3.5" /> รายละเอียด
                               </button>
-                              {role !== "user" && (
+                              {canCreate && (
                                 <button
                                   onClick={() => setEditTask(task)}
                                   className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded text-xs font-medium hover:bg-blue-100 transition flex items-center gap-1">
                                   <Pencil className="w-3.5 h-3.5" /> แก้ไข
                                 </button>
                               )}
-                              {role === "user" && ["progress", "pending"].includes(task.status) && (
+                              {!canCreate && ["progress", "pending"].includes(task.status) && (
                                 <button
                                   onClick={() => handleComplete(task.id)}
                                   className="px-3 py-1.5 bg-green-50 text-green-600 rounded text-xs font-medium hover:bg-green-100 transition flex items-center gap-1">

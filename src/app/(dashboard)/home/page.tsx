@@ -9,7 +9,7 @@ import TaskFilterBar from "@/components/TaskFilterBar";
 import ColumnSelector from "@/components/ColumnSelector";
 import { Search, Loader2, FileText, Plus } from "lucide-react";
 import { fetchApi } from "@/lib/api";
-import { getRole } from "@/lib/auth";
+import { canCreateTask } from "@/lib/auth";
 import { ITask, TASK_TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "@/types";
 
 interface SectionData {
@@ -45,13 +45,13 @@ export default function HomePage() {
   const [taskTypeFilter, setTaskTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_VISIBLE);
-  const [role, setRole] = useState<string>("user");
+  const [canCreate, setCanCreate] = useState(() =>
+    typeof window !== "undefined" ? canCreateTask() : false
+  );
 
   useEffect(() => {
-    setRole(getRole());
+    setCanCreate(canCreateTask());
   }, []);
-
-  const canCreate = role === "admin" || role === "commander";
 
   const toggleColumn = (key: string) => {
     setVisibleColumns((prev) =>
