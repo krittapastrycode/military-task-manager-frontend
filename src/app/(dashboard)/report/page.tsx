@@ -91,6 +91,7 @@ export default function ReportPage() {
     try {
       const params = new URLSearchParams({ year: String(chartYear) });
       if (chartQuarter) params.set("quarter", chartQuarter);
+      if (taskTypeFilter) params.set("task_type_key", taskTypeFilter);
 
       const res: any = await fetchApi(`/api/report/chart?${params}`);
       setChartData(res?.data ?? []);
@@ -99,7 +100,7 @@ export default function ReportPage() {
     } finally {
       setChartLoading(false);
     }
-  }, [chartYear, chartQuarter]);
+  }, [chartYear, chartQuarter, taskTypeFilter]);
 
   useEffect(() => {
     fetchChart();
