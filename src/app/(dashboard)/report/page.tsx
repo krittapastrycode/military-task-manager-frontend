@@ -58,6 +58,7 @@ export default function ReportPage() {
   const [pdfTasks, setPdfTasks] = useState<ITask[]>([]);
 
   const printRef = useRef<HTMLDivElement>(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCanExport(canExportPDF());
@@ -135,12 +136,25 @@ export default function ReportPage() {
     }
 
     setPdfMode(true);
-    await new Promise((r) => setTimeout(r, 150));
+    await new Promise((r) => setTimeout(r, 300));
+
+    // Fix ResponsiveContainer: html2canvas clones the DOM without firing ResizeObserver,
+    // so the SVG may get width=0. Pin the actual rendered width before capture.
+    const svgEl = chartContainerRef.current?.querySelector("svg");
+    const originalWidth = svgEl?.getAttribute("width") ?? null;
+    if (svgEl && chartContainerRef.current) {
+      svgEl.setAttribute("width", String(chartContainerRef.current.offsetWidth));
+    }
 
     try {
       const html2canvas = (await import("html2canvas")).default;
       const jsPDF = (await import("jspdf")).default;
-      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, logging: false });
+      const canvas = await html2canvas(printRef.current!, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+      });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("l", "mm", "a4");
       const pageW = pdf.internal.pageSize.getWidth();
@@ -156,6 +170,11 @@ export default function ReportPage() {
       const label = chartQuarter ? `Q${chartQuarter}` : "ทั้งปี";
       pdf.save(`รายงานอารักขา_${chartYear}_${label}.pdf`);
     } finally {
+      // Restore original SVG width attribute
+      if (svgEl) {
+        if (originalWidth !== null) svgEl.setAttribute("width", originalWidth);
+        else svgEl.removeAttribute("width");
+      }
       setPdfMode(false);
       setPdfTasks([]);
     }
@@ -296,7 +315,7 @@ export default function ReportPage() {
                 <Loader2 className="animate-spin w-6 h-6 text-gray-400" />
               </div>
             ) : (
-              <div className="h-[320px]">
+              <div ref={chartContainerRef} className="h-[320px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
