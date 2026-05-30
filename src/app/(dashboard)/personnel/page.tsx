@@ -1,12 +1,26 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import ContentContainer from "@/components/ContentContainer";
 import { Search, Loader2 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import { IAdmin, IPagination } from "@/types";
 
 export default function PersonnelPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const roles: string[] = (() => {
+      try {
+        const p = JSON.parse(localStorage.getItem('profile') ?? '{}');
+        return Array.isArray(p?.role) ? p.role : [p?.role ?? 'user'];
+      } catch { return ['user']; }
+    })();
+    const isPrivileged = roles.includes('admin') || roles.includes('commander');
+    if (!isPrivileged) router.replace('/home');
+  }, [router]);
+
   const [admins, setAdmins] = useState<IAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

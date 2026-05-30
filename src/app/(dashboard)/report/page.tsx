@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import ContentContainer from "@/components/ContentContainer";
 import TaskTypeIcon from "@/components/TaskTypeIcon";
 import { Loader2, Download } from "lucide-react";
@@ -27,6 +28,19 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 export default function ReportPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const roles: string[] = (() => {
+      try {
+        const p = JSON.parse(localStorage.getItem('profile') ?? '{}');
+        return Array.isArray(p?.role) ? p.role : [p?.role ?? 'user'];
+      } catch { return ['user']; }
+    })();
+    const isPrivileged = roles.includes('admin') || roles.includes('commander');
+    if (!isPrivileged) router.replace('/home');
+  }, [router]);
+
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateFrom, setDateFrom] = useState("");

@@ -20,14 +20,15 @@ interface MenuItem {
   to: string;
   text: string;
   Icon: LucideIcon;
+  privileged?: boolean; // commander + admin only
 }
 
 const menus: MenuItem[] = [
   { to: "/home", text: "ภารกิจวันนี้", Icon: ClipboardList },
   { to: "/task", text: "จัดการภารกิจ", Icon: ListTodo },
   { to: "/calendar", text: "ปฏิทิน", Icon: Calendar },
-  { to: "/report", text: "รายงาน", Icon: BarChart3 },
-  { to: "/personnel", text: "กำลังพล", Icon: Users },
+  { to: "/report", text: "รายงาน", Icon: BarChart3, privileged: true },
+  { to: "/personnel", text: "กำลังพล", Icon: Users, privileged: true },
   { to: "/settings", text: "การตั้งค่า", Icon: Settings },
 ];
 
@@ -40,13 +41,21 @@ export default function SideNavigation({ hide, onClose }: SideNavigationProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
+  const [isPrivileged, setIsPrivileged] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("profile");
     if (stored) {
-      try { setProfile(JSON.parse(stored)); } catch {}
+      try {
+        const p = JSON.parse(stored);
+        setProfile(p);
+        const roles: string[] = Array.isArray(p?.role) ? p.role : [p?.role ?? "user"];
+        setIsPrivileged(roles.includes("admin") || roles.includes("commander"));
+      } catch {}
     }
   }, []);
+
+  const visibleMenus = menus.filter((m) => !m.privileged || isPrivileged);
 
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -94,7 +103,7 @@ export default function SideNavigation({ hide, onClose }: SideNavigationProps) {
         </div>
 
         {/* Menu Items */}
-        {menus.map((item) => (
+        {visibleMenus.map((item) => (
           <Link
             key={item.to}
             href={item.to}
